@@ -11,15 +11,17 @@
 // !- You can test these functions before you even render anything on the page, just by calling the functions in your js file.
 
 
-// let todos = [
-//     {name: 'Learn React', completed: false},
-//     {name: 'Learn Redux', completed: true},
-//     {name: 'Learn Node', completed: false},
-//     {name: 'Learn Express', completed: true},
-//     {name: 'Learn MongoDB', completed: true},
-//     {name: 'Learn Mongoose', completed: false},
-// ]
-function renderSectionOne() {
+let state ={
+    todos : [
+    {name: 'Learn React', completed: false},
+    {name: 'Learn Redux', completed: true},
+    {name: 'Learn Node', completed: false},
+    {name: 'Learn Express', completed: true},
+    {name: 'Learn MongoDB', completed: true},
+    {name: 'Learn Mongoose', completed: false},
+    ]
+}
+function renderOptions() {
     let optionsSection = document.createElement("section");
 
     let title = document.createElement("h2");
@@ -31,6 +33,7 @@ function renderSectionOne() {
     let checked = document.createElement("input");
     checked.className = "completedCheckbox";
     checked.type = "checkbox";
+    checked.checked = true;
 
     label.append("Show completed", checked);
 
@@ -39,7 +42,8 @@ function renderSectionOne() {
     let mainSection = document.querySelector(".main");
     mainSection.append(optionsSection);
 }
-function renderSectionTwo() {
+
+function renderAddItems() {
     let addItemSection = document.createElement("section");
 
     let title = document.createElement("h2");
@@ -66,22 +70,41 @@ function renderSectionTwo() {
     mainSection.append(addItemSection);
 }
 
-function renderSectionThree() {
+function renderTodos() {
     let section = document.createElement("section");
 
     let title = document.createElement("h2");
     title.className = "title";
     title.textContent = "TODO";
 
-    let ul = document.createElement("ul");
-    ul.className = "todo-list";
-    section.appendChild(title, ul);
+    for(let todo of state.todos){
+        let ul = document.createElement("ul");
+        ul.className = "todo-list";
 
+        let items = document.createElement("li");
+        items.className = "todo-item";
+        let checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.name = "checkbox";
+
+        let label = document.createElement("label");
+        label.className = "todo-label";
+        label.textContent = todo.name;
+
+        let deleteButton = document.createElement("button");
+        deleteButton.textContent = "Delete";
+
+        items.append(checkbox, label, deleteButton);
+        ul.append(items);
+        section.append(title, ul);
+
+        
+    }
     let mainSection = document.querySelector(".main");
     mainSection.append(section);
 }
 
-function renderSectionFour() {
+function renderCompletedTodos() {
     let section = document.createElement("section");
 
     let title = document.createElement("h2");
@@ -99,18 +122,16 @@ function renderSectionFour() {
 
 
 function render() {
-    // document.body.textContent = "";
+    document.body.textContent = "";
 
     let mainSection = document.createElement("main");
     mainSection.className = "main";
     document.body.append(mainSection);
 
-    renderSectionOne();
-    renderSectionTwo();
-    renderSectionThree();
-    renderSectionFour();
-    //     
-    // </main>;
+    renderOptions();
+    renderAddItems();   
+    renderTodos();
+    renderCompletedTodos();
 }
 
 render();
