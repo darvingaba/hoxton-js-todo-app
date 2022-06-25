@@ -16,10 +16,9 @@ let state ={
     {name: 'Learn React', completed: false},
     {name: 'Learn Redux', completed: true},
     {name: 'Learn Node', completed: false},
-    {name: 'Learn Express', completed: true},
-    {name: 'Learn MongoDB', completed: true},
-    {name: 'Learn Mongoose', completed: false},
-    ]
+
+    ],
+    showCompleted: true,
 }
 function renderOptions() {
     let optionsSection = document.createElement("section");
@@ -34,7 +33,8 @@ function renderOptions() {
     checked.className = "completedCheckbox";
     checked.type = "checkbox";
     checked.checked = true;
-
+    
+    
     label.append("Show completed", checked);
 
     optionsSection.append(title, label);
@@ -68,16 +68,27 @@ function renderAddItems() {
 
     let mainSection = document.querySelector(".main");
     mainSection.append(addItemSection);
+
+    form.addEventListener("submit", function(e) {
+        e.preventDefault();
+        let text = input.value;
+        let todo = {name: text, completed: false};
+        state.todos.push(todo);
+        render();
+    });
 }
 
 function renderTodos() {
-    let section = document.createElement("section");
+    let todoSection = document.createElement("section");
+    todoSection.className = "todo-list";
 
-    let title = document.createElement("h2");
-    title.className = "title";
-    title.textContent = "TODO";
+    // let title = document.createElement("h2");
+    // title.className = "title";
+    // title.textContent = "TODO";
 
-    for(let todo of state.todos){
+    for(let todoList of state.todos) {
+        
+
         let ul = document.createElement("ul");
         ul.className = "todo-list";
 
@@ -87,21 +98,49 @@ function renderTodos() {
         checkbox.type = "checkbox";
         checkbox.name = "checkbox";
 
+        checkbox.addEventListener("click", function(e) {
+            todoList.completed = !todoList.completed;
+            render();
+        })
+        
         let label = document.createElement("label");
         label.className = "todo-label";
-        label.textContent = todo.name;
+        label.textContent = todoList.name;
 
         let deleteButton = document.createElement("button");
-        deleteButton.textContent = "Delete";
+        deleteButton.textContent = "X";
+        deleteButton.addEventListener("click", function() {
+            let index = state.todos.indexOf(todoList);
+            state.todos.splice(index, 1);
+            render();
+        })
 
         items.append(checkbox, label, deleteButton);
         ul.append(items);
-        section.append(title, ul);
+        todoSection.append( ul);
 
-        
     }
+    
+    // deleteButton.addEventListener("click", function (text) {
+    //     let newState = state.todos.filter((todo) => todo.name !== text);
+    //     state.todos = newState;
+    // });
+    let mainDeletebutton = document.createElement("button");
+    mainDeletebutton.textContent = "Delete All";
+    mainDeletebutton.className = "delete-all";
+
+    
+    todoSection.append( mainDeletebutton);
+
+    mainDeletebutton.addEventListener("click", function(e) {
+        e.preventDefault();
+        state.todos = [];
+        render();
+    })
+
     let mainSection = document.querySelector(".main");
-    mainSection.append(section);
+    mainSection.append(todoSection);
+    
 }
 
 function renderCompletedTodos() {
@@ -114,7 +153,7 @@ function renderCompletedTodos() {
     let ul = document.createElement("ul");
     ul.className = "completed-list";
 
-    section.appendChild(title, ul);
+    section.append(title, ul);
 
     let mainSection = document.querySelector(".main");
     mainSection.append(section);

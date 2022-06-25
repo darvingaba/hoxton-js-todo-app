@@ -35,6 +35,20 @@ button {
   border: none;
   background: none;
   color: #000000cc;
+  border: #00000010 solid 1px;
+}
+.todo-list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  place-items: center;
+}
+.delete-all{
+  border: none;
+  background: none;
+  color: #000000cc;
+  border: #00000010 solid 1px;
+  padding: 10px 20px;
 }
 
 form.add-item {
