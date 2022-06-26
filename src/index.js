@@ -13,9 +13,9 @@
 
 let state ={
     todos : [
-    {name: 'Learn React', completed: false},
-    {name: 'Learn Redux', completed: false},
-    {name: 'Learn Node', completed: false},
+    // {name: 'Learn React', completed: false},
+    // {name: 'Learn Redux', completed: false},
+    // {name: 'Learn Node', completed: false},
 
     ],
     showCompleted: true,
@@ -41,9 +41,13 @@ function renderOptions() {
     checked.type = "checkbox";    
     
     checked.addEventListener("click", function() {
+        
         state.showCompleted = !state.showCompleted;
         render();
     })
+    if(state.showCompleted) {
+        checked.checked = true;
+    }
     // console.log(state.todos);
     
     label.append("Show completed", checked);
@@ -53,7 +57,7 @@ function renderOptions() {
     let mainSection = document.querySelector(".main");
     mainSection.append(optionsSection);
 }
-console.log(state.todos[1].completed);
+// console.log(state.todos[1].completed);
 function renderAddItems() {
     let addItemSection = document.createElement("section");
 
@@ -106,7 +110,13 @@ function renderTodos() {
         ul.className = "todo-list";
 
         let items = document.createElement("li");
-        items.className = "todo-item";
+        
+
+        if(todoList.completed) {
+            items.className = "todo-item completed";
+        }else {
+            items.className = "todo-item";
+        }
         
         let checkbox = document.createElement("input");
         checkbox.type = "checkbox";
@@ -125,28 +135,25 @@ function renderTodos() {
             state.todos.splice(index, 1);
             render();
         })
-        for (let element of state.todos){
+        checkbox.addEventListener("click", function() {
+            todoList.completed = !todoList.completed;
+            render();
+        })
 
-            if(element.completed === false){
-                let todoListLi = document.createElement("li")
-                todoListLi.className = "todo-items"
+        if(todoList.completed) {
+            items.setAttribute("style", "text-decoration: line-through;");
+        }
 
-                let todoItemsInput = document.createElement("input")
-                todoItemsInput.type = "checkbox"
-                todoItemsInput.name = "checkbox"
-                todoItemsInput.addEventListener("change", function(){
-                    element.completed = !element.completed
-                    render()
-                })
-            };
+        if(todoList.completed) {
+            checkbox.checked = true;
+        }
         
-        };
-
         items.append(checkbox, label, deleteButton);
         ul.append(items);
         todoSection.append( ul);
 
-        }
+    }
+    
     
     console.log(state.todos);
     console.log(state.showCompleted);
@@ -178,11 +185,17 @@ function renderCompletedTodos() {
     title.textContent = "COMPLETED";
 
     let ul = document.createElement("ul");
+
+    let compTodos = state.todos.filter((todoList) => todoList.completed);
+    for(let todoList of compTodos) {
+    ul.append(todoList.name + " | " );
+    }
+
     ul.className = "completed-list";
 
     section.append(title, ul);
 
-
+    
     let mainSection = document.querySelector(".main");
     mainSection.append(section);
 }
