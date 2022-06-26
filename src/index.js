@@ -14,12 +14,19 @@
 let state ={
     todos : [
     {name: 'Learn React', completed: false},
-    {name: 'Learn Redux', completed: true},
+    {name: 'Learn Redux', completed: false},
     {name: 'Learn Node', completed: false},
 
     ],
     showCompleted: true,
 }
+
+function createTodo(text) {
+    let todo = {name: text, completed: false};
+    state.todos.push(todo);
+    render();
+}
+
 function renderOptions() {
     let optionsSection = document.createElement("section");
 
@@ -31,9 +38,13 @@ function renderOptions() {
 
     let checked = document.createElement("input");
     checked.className = "completedCheckbox";
-    checked.type = "checkbox";
-    checked.checked = true;
+    checked.type = "checkbox";    
     
+    checked.addEventListener("click", function() {
+        state.showCompleted = !state.showCompleted;
+        render();
+    })
+    // console.log(state.todos);
     
     label.append("Show completed", checked);
 
@@ -42,7 +53,7 @@ function renderOptions() {
     let mainSection = document.querySelector(".main");
     mainSection.append(optionsSection);
 }
-
+console.log(state.todos[1].completed);
 function renderAddItems() {
     let addItemSection = document.createElement("section");
 
@@ -69,12 +80,9 @@ function renderAddItems() {
     let mainSection = document.querySelector(".main");
     mainSection.append(addItemSection);
 
-    form.addEventListener("submit", function(e) {
+    form.addEventListener("submit", function (e) {
         e.preventDefault();
-        let text = input.value;
-        let todo = {name: text, completed: false};
-        state.todos.push(todo);
-        render();
+        createTodo(input.value);
     });
 }
 
@@ -85,24 +93,27 @@ function renderTodos() {
     // let title = document.createElement("h2");
     // title.className = "title";
     // title.textContent = "TODO";
+    
+    let checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.name = "checkbox";
 
+
+    
     for(let todoList of state.todos) {
         
-
         let ul = document.createElement("ul");
         ul.className = "todo-list";
 
         let items = document.createElement("li");
         items.className = "todo-item";
+        
         let checkbox = document.createElement("input");
         checkbox.type = "checkbox";
         checkbox.name = "checkbox";
-
-        checkbox.addEventListener("click", function(e) {
-            todoList.completed = !todoList.completed;
-            render();
-        })
         
+        
+
         let label = document.createElement("label");
         label.className = "todo-label";
         label.textContent = todoList.name;
@@ -114,17 +125,33 @@ function renderTodos() {
             state.todos.splice(index, 1);
             render();
         })
+        for (let element of state.todos){
+
+            if(element.completed === false){
+                let todoListLi = document.createElement("li")
+                todoListLi.className = "todo-items"
+
+                let todoItemsInput = document.createElement("input")
+                todoItemsInput.type = "checkbox"
+                todoItemsInput.name = "checkbox"
+                todoItemsInput.addEventListener("change", function(){
+                    element.completed = !element.completed
+                    render()
+                })
+            };
+        
+        };
 
         items.append(checkbox, label, deleteButton);
         ul.append(items);
         todoSection.append( ul);
 
-    }
+        }
     
-    // deleteButton.addEventListener("click", function (text) {
-    //     let newState = state.todos.filter((todo) => todo.name !== text);
-    //     state.todos = newState;
-    // });
+    console.log(state.todos);
+    console.log(state.showCompleted);
+    
+    
     let mainDeletebutton = document.createElement("button");
     mainDeletebutton.textContent = "Delete All";
     mainDeletebutton.className = "delete-all";
@@ -155,6 +182,7 @@ function renderCompletedTodos() {
 
     section.append(title, ul);
 
+
     let mainSection = document.querySelector(".main");
     mainSection.append(section);
 }
@@ -170,7 +198,9 @@ function render() {
     renderOptions();
     renderAddItems();   
     renderTodos();
-    renderCompletedTodos();
+    if(state.showCompleted) {
+        renderCompletedTodos();
+    }
 }
 
 render();
